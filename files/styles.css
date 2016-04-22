@@ -1,0 +1,48 @@
+.selection-panel{
+    margin: 100px 150px ;
+    background: rgba(247, 247, 249 , 0.9);
+}
+
+#body {
+    background: url("../files/pics/bart.jpg") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+#body .station-box{
+    width: 330px;
+
+}
+#body .src-station{
+    background: rgba(93,93,93,0.5);
+    color: #ffffff;
+}
+#body .src-station:hover {
+    background: rgba(93,93,93,1);
+    color: #ffffff;
+}
+#body .dest-station{
+    background: rgba(93,93,93,0.5);
+    color: #ffffff;
+}
+#body .dest-station:hover {
+    background: rgba(93,93,93,1);
+    color: #ffffff;
+}
+#src-list,#dest-list{
+    position: absolute;
+    z-index: 1;
+    width: 330px;
+}
+#body .list-group{
+    max-height: 200px;
+    overflow-y: scroll;
+    border-bottom: 1px solid #ffffff;
+}
+#body .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    padding: 8px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: 1px solid #ddd;
+}
