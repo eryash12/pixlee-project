@@ -1,5 +1,5 @@
 .selection-panel{
-    margin: 100px 150px ;
+    /*margin: 100px 150px ;*/
     background: rgba(247, 247, 249 , 0.9);
 }
 
@@ -45,4 +45,17 @@
     line-height: 1.42857143;
     vertical-align: top;
     border-top: 1px solid #ddd;
+}
+.form-container{
+    min-height: 100px;
+    padding: 20px
+}
+.form-container md-datepicker{
+    margin-top: 16px;
+}
+#body hr{
+    border-top: 1px solid darkgray ;
+}
+.form-container .btn{
+    margin: 10px;
 }
