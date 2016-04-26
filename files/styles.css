@@ -1,10 +1,12 @@
 .selection-panel{
     /*margin: 100px 150px ;*/
-    background: rgba(247, 247, 249 , 0.9);
+    background: #ffffff;
+    box-shadow: 0 0 3px rgb(153, 153, 153);
+    padding: 48px 50px;
 }
 
 #body {
-    background: url("../files/pics/bart.jpg") no-repeat center center fixed;
+    background: #f2f2f2 repeat;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -55,7 +57,103 @@
 }
 #body hr{
     border-top: 1px solid darkgray ;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 .form-container .btn{
     margin: 10px;
+}
+.img{
+
+}
+.caption{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 0px;
+    padding-top: 2px;
+    font-weight: normal;
+}
+.video{
+    max-width: 98%;
+
+}
+.imgFrame{
+    font-family: karla;
+    color: #757575;
+    font-weight: bold;
+    margin: 10px 0px;
+    /*background-color: #f0f0f0 ;*/
+    /*box-shadow: 0 0 3px rgb(153, 153, 153);*/
+    padding-top: 20px ;
+    padding-bottom: 20px;
+}
+.imgFrame p {
+    margin-bottom: 5px;
+    font-size: 22px;
+    font-weight: 200;
+    margin-left: 15px;
+
+}
+.prof-pic{
+    float: left;
+    height: 40px;
+    width: 40px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+/*.prof-details{*/
+    /*float: left;*/
+/*}*/
+.frame-header{
+    padding: 0px;
+
+    
+}
+.frame-header-left{
+    padding: 0px;
+    font-size: 22px;
+
+}
+.frame-header-right{
+    padding: 0px;
+    padding-top: 8px;
+    padding-left: 10px;
+    font-size: 16px;
+
+}
+.user-name-text{
+
+    text-overflow: ellipsis;
+    font-family: pacifico;
+    /* Required for text-overflow to do anything */
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 0px;
+    padding-bottom: 6px;
+    color: #35638c;
+    font-weight: normal;
+
+
+}
+.frame-footer{
+    padding: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.date-text{
+    font-size: 12px;
+}
+.fa{
+    color: #35638c;
+    font-size: 16px;
+}
+#dispImages{
+    padding: 0px;
+}
+.location{
+    text-overflow: ellipsis;
+    /* Required for text-overflow to do anything */
+    white-space: nowrap;
+    overflow: hidden;
 }

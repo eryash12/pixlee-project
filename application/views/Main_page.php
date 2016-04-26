@@ -23,6 +23,8 @@
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
             <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css"/>
+            <link href='https://fonts.googleapis.com/css?family=Karla' rel='stylesheet' type='text/css'>
+            <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
             <link rel="stylesheet" href="<?php echo base_url()?>files/styles.css">
 
         </head>
@@ -102,7 +104,45 @@
                         <div id="alert" class="alert alert-danger col-md-12" style="display: none">
                             <strong>Error!</strong>{{alert}}.
                         </div>
-                     </div>
+                        <div></div>
+                        <input ng-model = "itemsPerPage" type="text"/>
+                        <ul class="pager">
+                            <li class="previous"><a href="javascript:void(0)" ng-click = "paginatePrev()">Previous</a></li>
+                            Displaying {{minIndex+1}} to {{maxIndex}} out of {{allResults.length}} results
+                            <li class="next"><a href="javascript:void(0)" ng-click = "paginateNext()">Next</a></li>
+                        </ul>
+                        <div id="dispImages" class="col-md-12">
+<!--                            <div class="col-md-4 imgFrame">-->
+<!--                                <div class="frame-header col-md-12">-->
+<!--                                    <div class="frame-header-left col-md-9">-->
+<!--                                        <img src="https://scontent.cdninstagram.com/t51.2885-19/s150x150/11349312_739459116155811_1310287381_a.jpg" class="img-circle prof-pic" alt=""/>-->
+<!--                                        <span class="user-name-text col-md-9">yash.tamakuwalalalalalalal</span>-->
+<!--                                    </div>-->
+<!--                                    <div class="frame-header-right col-md-3">-->
+<!--                                        <span class="date-text">{{dispDate}}</span>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <img class="img-thumbnail  img" src="https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/12965854_232658923757766_1298186547_n.jpg?ig_cache_key=MTIzNTMwOTE5Nzk4NzI0NDk4NA%3D%3D.2" alt=""/>-->
+<!--                                <div class="frame-footer col-md-12">-->
+<!--                                    <i class="fa fa-heart" aria-hidden="true"></i>-->
+<!--                                    <span class="like-text">10000000</span>-->
+<!--                                     &nbsp;-->
+<!--                                    <i class="fa fa-map-marker" aria-hidden="true"></i>-->
+<!--                                    <span>Taj Mahal</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                            <image-panel ng-repeat = "img in displayResults" image = "img" base = "{{base}}"></image-panel>
+
+
+
+
+                            </div>
+                        </div>
+                        <ul class="pager">
+                            <li class="previous"><a href="javascript:void(0)" ng-click = "paginateResults(minIndex - itemsPerPage,maxIndex - itemsPerPage)">Previous</a></li>
+                            Displaying {{minIndex+1}} to {{maxIndex}} out of {{allResults.length}} results
+                            <li class="next"><a href="javascript:void(0)" ng-click = "paginateResults(minIndex + itemsPerPage,maxIndex + itemsPerPage)">Next</a></li>
+                        </ul>
 
 
             </div>
@@ -118,6 +158,7 @@
                 var base = "<?php echo base_url();?>";
             </script>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
             <script src="<?php echo base_url()?>files/jquery.xml2json.js"></script>
             <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>

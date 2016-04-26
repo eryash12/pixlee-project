@@ -35,10 +35,57 @@ class User_model extends CI_Model
             return false;
         }
     }
-    function insertTag($tag,$nextMaxTagId){
-        $this->db->query("insert into search_queries (tag,next_max_tag_id) values ('$tag','$nextMaxTagId')");
+    function insertTag($tag){
+        $this->db->query("insert into search_queries (tag) values ('$tag')");
     }
-    function insertResults($data,$tag){
-        $this->db->query("insert into search_results (search_tag,img_url_std,time_posted,instagram_link,content_type,img_url_low,img_url_thumb,user_name) values ('$tag','{$data['std_res']}','{$data['timestamp']}','{$data['insta_link']}','{$data['type']}','{$data['low_res']}','{$data['thumb']}','{$data['user_name']}')");
+    function insertResults($data,$tag,$nextId){
+
+        $dupCheck = $this->db->query("select * from search_results where instagram_link = '{$data['instagram_link']}'");
+        if($dupCheck->num_rows() > 0){
+
+            return;
+        }
+        else {
+
+//            $this->db->query("insert into search_results (search_tag,img_url_std,time_posted,instagram_link,content_type,img_url_low,img_url_thumb,user_name,next_max_tag_id,likes,caption,location,user_dp) values ('$tag','{$data['std_res']}','{$data['timestamp']}','{$data['insta_link']}','{$data['type']}','{$data['low_res']}','{$data['thumb']}','{$data['user_name']}','$nextId','{$data['likes']}','{$data['caption_text']}','{$data['location']}','{$data['user_dp']}')");
+//            return true;
+            $this->db->insert('search_results',$data);
+        }
+    }
+    function getNumberOfResults($tag,$startDate,$endDate){
+        $results = $this->db->query("select count(*) as number FROM (select * from search_results where search_tag = '$tag' and time_posted < $endDate and time_posted > $startDate ORDER by img_id ) as sb ");
+        $refResults = $results->result_array();
+        $refResults = $refResults[0]['number'];
+        return $refResults;
+
+    }
+    function getResults($tag,$startDate,$endDate,$lastUrlId){
+        $results = $this->db->query("select * from search_results where search_tag = '$tag' and img_id > $lastUrlId and time_posted > $endDate and time_posted < $startDate ORDER by img_id limit 9 ");
+        return $results->result_array();
+    }
+    function getAllResults(){
+        $results = $this->db->query("select * from search_results");
+        return $results->result_array();
+    }
+//    function getNextUrlId($tag){
+//        $results = $this->db->query("select next_max_tag_id as nextId from search_queries where tag = '$tag'");
+//        $refResults = $results->result_array();
+//        $refResults = $refResults[0]['nextId'];
+//        return $refResults;
+//    }
+    function updateTag($tag,$nextMaxTagId){
+        $this->db->query("UPDATE search_queries SET next_max_id = '$nextMaxTagId' where tag = '$tag'");
+    }
+    function updateTopTimestamp($tag,$timestamp){
+        $results = $this->db->query("select top_timestamp as timestamp from search_queries where tag = '$tag'");
+        $refResults = $results->result_array();
+        $refResults = $refResults[0]['timestamp'];
+        $this->db->query("UPDATE search_queries SET top_timestamp = $timestamp where tag = '$tag'");
+    }
+    function getTopTimestamp($tag){
+        $results = $this->db->query("select top_timestamp as timestamp from search_queries where tag = '$tag'");
+        $refResults = $results->result_array();
+        $refResults = $refResults[0]['timestamp'];
+        return $refResults;
     }
 }

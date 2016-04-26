@@ -22,7 +22,9 @@ class Home extends CI_Controller{
     }
     function get($tag,$startDate,$endDate){
 //        $results = $this->user_model->get_data($tag,$startDate,$endDate);
-        $tag = "nike";
+        $tag = "sometimesiamjusthappy";
+        $startDate =1460876400;
+        $endDate =1460876400;
         $checkTag = $this->user_model->checkTag($tag);
 
         if(!$checkTag){
@@ -37,7 +39,7 @@ class Home extends CI_Controller{
                     $nextMaxTagId = 'N/A';
                 }
                 $this->user_model->insertTag($tag,$nextMaxTagId);
-                $this->get_contents($img_data,$tag);
+                $this->getContents($img_data,$tag);
                 $this->get($tag,$startDate,$endDate);
 
             }
@@ -47,24 +49,83 @@ class Home extends CI_Controller{
             }
         }
         else{
+            echo "reached to send data";
+            $this->sendData($tag,$startDate,$endDate,0);
 
         }
+    }
+    function sendData($tag,$startDate,$endDate,$lastUrlId){
+        $noOfResults = $this->user_model->getNumberOfResults($tag,$startDate,$endDate,$lastUrlId);
+        echo $noOfResults;
+        $startDate =1460876400;
+        $endDate =1460876400;
+        if($noOfResults > 0 && $noOfResults <9){
+            $action = $this->paginate($tag);
+            if(!$action){
+                //no more results available
+                $results = $this->user_model->getResults($tag,$startDate,$endDate,$lastUrlId);
+                echo json_encode($results);
+            }
+            else {
+                //again get results
+                $this->sendData($tag, $startDate, $endDate,$lastUrlId);
+            }
+        }
+        elseif($noOfResults == 0){
 
+            //paginate to get more results
+            $action = $this->paginate($tag);
+            if(!$action){
+                //no more results available
+                echo "No more results";
+            }
+            else {
+                //again get results
+                $this->sendData($tag, $startDate, $endDate,$lastUrlId);
+            }
+        }
+        else{
+            $results = $this->user_model->getResults($tag,$startDate,$endDate,$lastUrlId);
+            echo json_encode($results);
+        }
 
+    }
+    function paginate($tag){
+        echo "got till pagination";
+        $nextId = $this->user_model->getNextUrlId($tag);
+        if(strcmp($nextId,'N/A')==0){
+            return false;
+        }
+        else {
+            $response = file_get_contents("https://api.instagram.com/v1/tags/$tag/media/recent?access_token=44475601.1677ed0.f1f91cc38e1d41feb05d46a6fb7997a3&max_tag_id=$nextId");
+            $response = json_decode($response);
+            $img_data = $response->data;
+            if (sizeof($img_data) > 0) {
+                if (property_exists($response->pagination, 'next_max_tag_id')) {
+                    $nextMaxTagId = $response->pagination->next_max_tag_id;
+                } else {
+                    $nextMaxTagId = 'N/A';
+                }
+                $this->user_model->updateTag($tag, $nextMaxTagId);
+                echo "filling contents";
+                $this->getContents($img_data, $tag);
 
+            }
+            return true;
+        }
     }
     function post(){
         $tag = 'chodubhagatmadarchodbhenchod';
-        $tag = 'nike';
-        $response = file_get_contents("https://api.instagram.com/v1/tags/$tag/media/recent?access_token=44475601.1677ed0.f1f91cc38e1d41feb05d46a6fb7997a3");
+        $tag = 'love';
+        $response = file_get_contents("https://api.instagram.com/v1/tags/love/media/recent?access_token=44475601.1677ed0.f1f91cc38e1d41feb05d46a6fb7997a3&count=50");
         $response = json_decode($response);
 //        echo "<pre>";
 //        print_r($response<!--);
            //echo "</pre>";
         $responseData = $response->data;
         echo "<pre>";
-        print_r($responseData);
-        echo(property_exists($responseData[0]->caption,'text'));
+        print_r($response);
+//        echo(property_exists($responseData[0]->caption,'text'));
         echo "</pre>";
         exit;
         $data['nextMaxTagId'] = $response->pagination->next_max_tag_id;
@@ -74,19 +135,24 @@ class Home extends CI_Controller{
         echo "</pre>";
 
     }
-    function test($a,$b){
-//        $str = "#ncsk#nike#nikefy abcd #nike is awesome #nikefy is awesome";
-//        $regex = "/#nike[#\s]/";
-//        preg_match_all($regex,$str, $matches);
-//        echo "<pre>";
-//        print_r($matches);
-//        echo "</pre>";
 
-       if(strcmp('video','video')){
-        echo "yes";
-       }
+    function test(){
+        $nextUrl = "https://api.instagram.com/v1/tags/nike/media/recent?access_token=44475601.1677ed0.f1f91cc38e1d41feb05d46a6fb7997a3&count=50";
+        while($nextUrl != null){
+            $response = file_get_contents("https://api.instagram.com/v1/tags/nike/media/recent?access_token=44475601.1677ed0.f1f91cc38e1d41feb05d46a6fb7997a3&count=50");
+            $response = json_decode($response);
+            echo "<pre>";
+            print_r($response);
+            echo "</pre>";
+            if(property_exists($response->pagination,'next_url')){
+                $nextUrl = $response->pagination->next_url;
+            }
+            else{
+                $nextUrl = null;
+            }
+        }
     }
-    function get_contents($img_data,$tag){
+    function getContents($img_data,$tag){
         for($i = 0 ; $i<sizeof($img_data); $i++){
             $thisImg = $img_data[$i];
             $data['type'] = $thisImg->type;
@@ -135,6 +201,12 @@ class Home extends CI_Controller{
             }
             $this->user_model->insertResults($data,$tag);
         }
+        echo "contents filled";
+
+    }
+    function getResults(){
+        $results = $this->user_model->getAllResults();
+        echo json_encode($results);
     }
 
 

@@ -250,7 +250,7 @@
 //});
 
 var app = angular.module("instCollection",['ngMaterial','ngResource']);
-app.controller('instCollectionCntrl',['$scope','$log','$http','$resource',function($scope,$log,$http,$resource){
+app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce',function($scope,$log,$http,$resource,$sce){
     $scope.todaysDate = new Date();
     $scope.maxDate = new Date(
         $scope.todaysDate.getFullYear(),
@@ -260,6 +260,11 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource',functi
     $scope.endDate = "";
     $scope.tag = "";
     $scope.alert = "";
+    $scope.itemsPerPage = 6;
+    $scope.minIndex = 0;
+    $scope.maxIndex =  $scope.itemsPerPage;
+    var date = new Date(1461480353 * 1000);
+    $scope.dispDate = (date.getMonth()+1)+"0/"+date.getDate()+"/"+date.getFullYear();
     $scope.submit = function(){
 
         if($scope.tag === ''){
@@ -276,11 +281,13 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource',functi
         var unixEndDate = Math.floor($scope.endDate/1000);
         var get_url = base + 'home/get/'+$scope.tag+'/'+unixStartDate+'/'+unixEndDate;
         var post_url = base + 'home/post';
-        $http.get(get_url).then(function success(data){
-            $log.info(data);
-        },function error(err){
-           $log.error(err);
-        });
+        console.log(unixStartDate);
+        console.log(unixEndDate);
+        //$http.get(get_url).then(function success(data){
+        //    $log.info(data);
+        //},function error(err){
+        //   $log.error(err);
+        //});
         //$resource(url).get( function success(data) {
         //   $log.info(data);
         //}, function error(err){
@@ -289,10 +296,90 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource',functi
 
 
     }
+    $scope.displayResults = [];
+    $scope.paginatePrev = function(){
+        if(($scope.minIndex-$scope.itemsPerPage) < 0){
+            $scope.minIndex = 0;
+            $scope.maxIndex = $scope.itemsPerPage;
 
+        }
+        else{
+            $scope.paginateResults($scope.minIndex-$scope.itemsPerPage,$scope.maxIndex-$scope.itemsPerPage);
+        }
+        $scope.paginateResults(0,$scope.maxIndex);
+    }
+    $scope.paginateNext = function(){
+        if(($scope.maxIndex + $scope.itemsPerPage) > $scope.allResults.length){
+            $scope.maxIndex = $scope.allResults.length;
+            $scope.minIndex += $scope.itemsPerPage;
+        }
+    }
+    $scope.paginateResults = function(minIndex,maxIndex){
+
+
+        if(minIndex <= 0){
+            $('.previous').hide();
+            minIndex =0;
+            maxIndex = minIndex + $scope.itemsPerPage;
+        }
+        else{
+            $('.previous').show();
+        }
+        if(maxIndex >= $scope.allResults.length ){
+            $('.next').hide();
+
+            maxIndex = $scope.allResults.length;
+            minIndex = maxIndex - $scope.itemsPerPage;
+        }
+        else{
+            $('.next').show();
+        }
+        //$scope.minIndex = minIndex;
+        //$scope.maxIndex = maxIndex;
+        $scope.displayResults = [];
+        for(var i = minIndex; i < maxIndex ; ++i){
+            $scope.displayResults.push($scope.allResults[i]);
+        }
+        console.log($scope.itemsPerPage);
+    }
+
+    $http.get(base+'home/getResults').then(function success(data){
+        console.log(data);
+        $scope.allResults = data.data;
+        $scope.paginateResults(0,$scope.itemsPerPage);
+    }, function error (data) {
+        $log.error(data);
+    });
+    $scope.getFormattedDate = function (date) {
+
+        date = new Date(date * 1000);
+        return ((date.getMonth()+1)+"/"+date.getDate()+"/"+date.getFullYear());
+    }
     function compareDates(date1, date2) {
         return new Date(date1).getDate() > new Date(date2).getDate();
+    }
+    $scope.trustSrc = function(src) {
+        return $sce.trustAsResourceUrl(src);
     }
 
 
 }]);
+app.directive("imagePanel",function(){
+    return {
+        restrict: 'E',
+        templateUrl  : base + "files/directives/img_html.php",
+        replace: true
+
+
+    }
+});
+app.directive('fallbackSrc', function () {
+    var fallbackSrc = {
+        link: function postLink(scope, iElement, iAttrs) {
+            iElement.bind('error', function() {
+                angular.element(this).attr("src", iAttrs.fallbackSrc);
+            });
+        }
+    }
+    return fallbackSrc;
+});
