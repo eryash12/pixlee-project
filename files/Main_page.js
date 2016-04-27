@@ -39,7 +39,7 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
         var unixStartDate = Math.floor($scope.startDate/1000);
         var unixEndDate = Math.floor($scope.endDate/1000);
         unixEndDate+= 86400;
-        var post_url = base + 'home/post/'+$scope.tag+'/'+unixStartDate+'/'+unixEndDate;
+        var post_url = base + 'home/post/'+$scope.tag+'/'+unixStartDate+'/'+unixEndDate+'/';
         //var post_url = base + '/post';
         console.log(unixStartDate);
         console.log(unixEndDate);
@@ -50,7 +50,7 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
            $log.error(err);
         });
 
-        var get_url =  base + 'home/get/'+$scope.tag+'/'+unixStartDate+'/'+unixEndDate;
+        var get_url =  base + 'home/get/'+$scope.tag+'/'+unixStartDate+'/'+unixEndDate+'/';
         $scope.getResults(get_url);
         $interval(function(){
             $scope.getResults(get_url);
