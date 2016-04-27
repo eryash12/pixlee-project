@@ -29,6 +29,7 @@ class Home extends CI_Controller{
     function post($tag,$startDate,$endDate){
         //request recieved for data
         //checking if tag exists in db
+        $this->output->set_header('HTTP/1.0 200 OK');
         $checkTag = $this->user_model->checkTag($tag);
 
         if(!$checkTag){
@@ -176,7 +177,7 @@ class Home extends CI_Controller{
         return true;
     }
     function get($tag,$startDate,$endDate){
-
+        $this->output->set_header('HTTP/1.0 200 OK');
         $results = $this->user_model->getResults($tag,$startDate,$endDate);
         echo json_encode($results);
     }
