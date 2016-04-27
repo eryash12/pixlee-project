@@ -182,8 +182,8 @@ class Home extends CI_Controller{
     }
     function get($tag,$startDate,$endDate){
         $this->output->set_header('HTTP/1.0 200 OK');
-        header('Access-Control-Allow-Origin: *');
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        $this->output->set_header('Access-Control-Allow-Origin: *');
+        $this->output->set_header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
         $results = $this->user_model->getResults($tag,$startDate,$endDate);
         echo json_encode($results);
     }
