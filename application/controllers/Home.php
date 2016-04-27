@@ -20,10 +20,6 @@ class Home extends CI_Controller{
         $this->load->view("Main_page");
 
     }
-    function map(){
-        $this->load->view("map");
-    }
-
     function getAllResults(){
         $results = $this->user_model->getAllResults();
         echo json_encode($results);
@@ -73,29 +69,39 @@ class Home extends CI_Controller{
     }
 
     function pagination($tag,$nextId,$endDate,$startDate){
-//        echo "</br> started pagination max id = $nextId";
+        //this function is responsible to traverse through the api
         $response = $this->getApiResponse($tag,$nextId);
         $img_data = $response->data;
+        //checking if there is a next page in the pagination
         if (property_exists($response->pagination, 'next_max_tag_id')) {
+            //yes there is
             $nextId = $response->pagination->next_max_tag_id;
         }
         else{
+            //no
             $nextId =null;
         }
+        //update search params with the nextId incase server dies and we need to start where we left off
         $this->user_model->updateSearch(array('tag'=>$tag,'start_date'=>$startDate,'end_date'=>$endDate,'next_max_tag_id'=>$nextId));
+        //parse through the data recieved
         $this->getContents($img_data,$tag,$endDate,$startDate,$nextId);
+        //check number of results collected
         $getResultCount = $this->user_model->getNumberOfResults($tag,$startDate,$endDate);
+        //if results are less then 90 go ahead and paginated
         if($getResultCount < 90){
+            //trying to paginate
             if($nextId != null){
-
+                //next page available
                 $this->pagination($tag,$nextId,$endDate,$startDate);
             }
             else{
+                //next page not available
                 return;
             }
 
         }
         else{
+            //no of results are greater then 90 so we break the collection
             return;
         }
     }
@@ -111,8 +117,7 @@ class Home extends CI_Controller{
         return $response;
     }
     function getContents($img_data,$tag,$endDate,$startDate,$nextId){
-
-
+        //function responsible for data parsing
         for($i = 0 ; $i<sizeof($img_data); $i++){
             $data = [];
             $thisImg = $img_data[$i];
@@ -141,7 +146,6 @@ class Home extends CI_Controller{
                 }
             }
             if(strcmp(gettype($thisImg->caption),'object')==0){
-
                 $caption_text = $thisImg->caption->text;
                 $data['caption'] = $caption_text;
                 $regex = "/#".$tag."/";
@@ -163,31 +167,26 @@ class Home extends CI_Controller{
                         }
                     }
                 }
-
             }
             else{
                 $data['time_posted'] = $thisImg->created_time;
-
             }
             $data['search_tag'] = $tag;
             $data['next_max_tag_id'] = $nextId;
             if($data['time_posted']<=$endDate && $data['time_posted']>=$startDate){
                 $this->user_model->insertResults($data, $tag,$nextId);
             }
-
         }
-
-//        echo "contents filled";
         return true;
     }
     function get($tag,$startDate,$endDate){
+        //function responsible to supply data on query
         $this->output->set_header('HTTP/1.0 200 OK');
         $this->output->set_header('Access-Control-Allow-Origin: *');
         $this->output->set_header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
         $results = $this->user_model->getResults($tag,$startDate,$endDate);
         echo json_encode($results);
     }
-
 
 }
 ?>

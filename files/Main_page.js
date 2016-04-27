@@ -1,4 +1,7 @@
+//instantiating angular
 var app = angular.module("instCollection",['ngMaterial','ngResource']);
+
+//setting up the controller
 app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce','$interval',function($scope,$log,$http,$resource,$sce,$interval){
     $scope.todaysDate = new Date();
     $scope.maxDate = new Date(
@@ -10,6 +13,7 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
     $scope.tag = "sanfrancisco";
     $scope.alert = "";
     $scope.itemsPerPage = 6;
+    //minIndex and maxIndex for pagination
     $scope.minIndex = 0;
     $scope.maxIndex =  $scope.itemsPerPage;
     $scope.displayTag = "";
@@ -19,44 +23,44 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
     var imgPanel = $('#dispImages');
     var alert = $('#alert');
     alert.hide();
-
+    //displaying default data on page load
     $http.get(base + 'home/get/sanfrancisco/1461567600/1461654000').then(function success(data){
-        $log.info('get');
-        console.log(data);
         $scope.allResults = data.data;
         $scope.checkTag = $scope.allResults[0].search_tag;
         $scope.paginateResults($scope.minIndex,$scope.maxIndex);
-
-
-    }, function error (data) {
+        }, function error (data) {
         $log.error(data);
     });
+    // function called when user enters details and clicks submit
     $scope.submit = function(){
         $scope.minIndex = 0;
         $scope.maxIndex = $scope.itemsPerPage;
+        //check if tag is filled
         if($scope.tag === ''){
             $scope.alert=' Please enter a Tag';
             alert.fadeIn();
             alert.fadeOut(15000);
             return;
         }
+        //check if endDate is not before startDate
         else if(!compareDates($scope.endDate,$scope.startDate)){
             $scope.alert=' Start Date cannot be after the End Date';
             alert.fadeIn();
             alert.fadeOut(15000);
             return;
         }
+        //replace spaces in the tag
         $scope.tag = $scope.tag.replace(/\s/g, '');
         var unixStartDate = Math.floor($scope.startDate/1000);
         var unixEndDate = Math.floor($scope.endDate/1000);
+        //add 24hrs to the end date so that results can be collected of the EndDate too.
         unixEndDate+= 86400;
+
+        //url to call the post function used for collection of data
         var post_url = base + 'home/post/'+$scope.tag+'/'+unixStartDate+'/'+unixEndDate+'/';
         //var post_url = base + '/post';
-        console.log(unixStartDate);
-        console.log(unixEndDate);
         $http.post(post_url).then(function success(data){
-            $log.info('post');
-            $log.info(data);
+            //if the tag contains no data the backend will echo no results
             if(data.data === 'no results'){
                 $scope.alert = ' No results found';
                 alert.fadeIn();
@@ -70,6 +74,7 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
         });
         imgPanel.css('display', 'none');
         loader.css('display', 'block');
+        //url to ask data to the server
         var get_url =  base + 'home/get/'+$scope.tag+'/'+unixStartDate+'/'+unixEndDate+'/';
         $scope.getResults(get_url);
         $interval(function(){
@@ -77,24 +82,22 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
         },10000)
 
     }
-
+    //function to query server for data
     $scope.getResults = function(get_url){
-
         $http.get(get_url).then(function success(data){
-            $log.info('get');
-            console.log(data);
             if(data.data.length > 0 && data.data[0].search_tag === $scope.tag) {
                 $scope.allResults = data.data;
                 $scope.checkTag = $scope.allResults[0].search_tag;
                 $scope.paginateResults($scope.minIndex, $scope.maxIndex);
             }
-
         }, function error (data) {
             $log.error(data);
         });
     };
     $scope.displayResults = [];
+    //function which responds to pagination
     $scope.paginateResults = function(minIndex,maxIndex){
+        // to filter errand ajax responds
         if($scope.checkTag !== $scope.tag){
             return;
         }
@@ -133,21 +136,23 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
         console.log($scope.itemsPerPage);
     }
 
-
+    //function to change unix date to human redable
     $scope.getFormattedDate = function (date) {
-
         date = new Date(date * 1000);
         return ((date.getMonth()+1)+"/"+date.getDate()+"/"+date.getFullYear());
     }
+    //function to compare two datees
     function compareDates(date1, date2) {
         return new Date(date1).getDate() > new Date(date2).getDate();
     }
+    // function for angular to trust http:// link
     $scope.trustSrc = function(src) {
         return $sce.trustAsResourceUrl(src);
     }
 
 
 }]);
+//angular custom directive for a single image display panel
 app.directive("imagePanel",function(){
     return {
         restrict: 'E',
@@ -157,6 +162,7 @@ app.directive("imagePanel",function(){
 
     }
 });
+//angular directive for src verification
 app.directive('fallbackSrc', function () {
     var fallbackSrc = {
         link: function postLink(scope, iElement, iAttrs) {
