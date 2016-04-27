@@ -67,9 +67,10 @@
                             <md-button ng-click="submit()">Submit</md-button>
                             </div>
                         </div>
-                        <div id="alert" class="alert alert-danger col-md-12" style="display: none">
+                        <div id="alert" class="alert alert-danger col-md-12" >
                             <strong>Error!</strong>{{alert}}.
                         </div>
+
                         <div class="loader-div col-md-12" style="display: none">
                             <div class="loader col-md-2 col-md-offset-5"></div>
                         </div>
@@ -77,16 +78,16 @@
                             <div class="col-md-12">
                             <ul class="pager">
                                 <li class="previous"><a href="javascript:void(0)" ng-click = "paginateResults(minIndex-itemsPerPage,maxIndex-itemsPerPage)">Previous</a></li>
-                                Displaying {{minIndex+1}} to {{maxIndex}} out of {{allResults.length}} results
+                                Displaying {{minIndex+1}} to {{maxIndex}} out of {{resultSize}} results
                                 <li class="next"><a href="javascript:void(0)" ng-click = "paginateResults(minIndex+itemsPerPage,maxIndex+itemsPerPage)">Next</a></li>
                             </ul>
                             </div>
-                            <div id="tag-displaying">{{'#'+tag}}</div>
+                            <div id="tag-displaying">{{'#'+displayTag}}</div>
                             <image-panel ng-repeat = "img in displayResults" image = "img" base = "{{base}}"></image-panel>
                             <div class="col-md-12">
                             <ul class="pager">
                                 <li class="previous"><a href="javascript:void(0)" ng-click = "paginateResults(minIndex-itemsPerPage,maxIndex-itemsPerPage)">Previous</a></li>
-                                Displaying {{minIndex+1}} to {{maxIndex}} out of {{allResults.length}} results
+                                Displaying {{minIndex+1}} to {{maxIndex}} out of {{resultsize}} results
                                 <li class="next"><a href="javascript:void(0)" ng-click = "paginateResults(minIndex+itemsPerPage,maxIndex+itemsPerPage)">Next</a></li>
                             </ul>
                             </div>

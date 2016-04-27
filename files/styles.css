@@ -4,13 +4,12 @@
     box-shadow: 0 0 3px rgb(153, 153, 153);
     padding: 48px 50px;
 }
-
+main , footer{
+    background: #f2f2f2;
+}
 #body {
-    background: #f2f2f2 repeat;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+    background: #f2f2f2 ;
+
     font-family: karla;
 }
 #body .station-box{

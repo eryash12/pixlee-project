@@ -49,7 +49,7 @@ class Home extends CI_Controller{
             }
             else{
                 //if no data present in first call tag doesnt exist
-                echo "done";
+                echo "no results";
                 exit;
             }
         }

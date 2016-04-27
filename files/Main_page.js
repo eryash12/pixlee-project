@@ -12,27 +12,38 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
     $scope.itemsPerPage = 6;
     $scope.minIndex = 0;
     $scope.maxIndex =  $scope.itemsPerPage;
+    $scope.displayTag = "";
+    $scope.checkTag = "";
+    $scope.resultSize ="";
     var loader = $('.loader-div');
     var imgPanel = $('#dispImages');
+    var alert = $('#alert');
+    alert.hide();
 
     $http.get(base + 'home/get/sanfrancisco/1461567600/1461654000').then(function success(data){
         $log.info('get');
         console.log(data);
         $scope.allResults = data.data;
+        $scope.checkTag = $scope.allResults[0].search_tag;
         $scope.paginateResults($scope.minIndex,$scope.maxIndex);
+
+
     }, function error (data) {
         $log.error(data);
     });
     $scope.submit = function(){
-
+        $scope.minIndex = 0;
+        $scope.maxIndex = $scope.itemsPerPage;
         if($scope.tag === ''){
             $scope.alert=' Please enter a Tag';
-            $('#alert').css('display','block');
+            alert.fadeIn();
+            alert.fadeOut(15000);
             return;
         }
         else if(!compareDates($scope.endDate,$scope.startDate)){
             $scope.alert=' Start Date cannot be after the End Date';
-            $('#alert').css('display','block');
+            alert.fadeIn();
+            alert.fadeOut(15000);
             return;
         }
         $scope.tag = $scope.tag.replace(/\s/g, '');
@@ -46,10 +57,19 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
         $http.post(post_url).then(function success(data){
             $log.info('post');
             $log.info(data);
+            if(data.data === 'no results'){
+                $scope.alert = ' No results found';
+                alert.fadeIn();
+                alert.fadeOut(15000);
+                imgPanel.css('display','none');
+                loader.css('display','none');
+                return;
+            }
         },function error(err){
            $log.error(err);
         });
-
+        imgPanel.css('display', 'none');
+        loader.css('display', 'block');
         var get_url =  base + 'home/get/'+$scope.tag+'/'+unixStartDate+'/'+unixEndDate+'/';
         $scope.getResults(get_url);
         $interval(function(){
@@ -59,18 +79,14 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
     }
 
     $scope.getResults = function(get_url){
-        if($scope.allResults.length<$scope.itemsPerPage) {
-            imgPanel.css('display', 'none');
-            loader.css('display', 'block');
-        }
+
         $http.get(get_url).then(function success(data){
             $log.info('get');
             console.log(data);
-            $scope.allResults = data.data;
-            $scope.paginateResults($scope.minIndex,$scope.maxIndex);
-            if($scope.allResults.length>$scope.itemsPerPage) {
-                loader.css('display', 'none');
-                imgPanel.css('display', 'block');
+            if(data.data.length > 0 && data.data[0].search_tag === $scope.tag) {
+                $scope.allResults = data.data;
+                $scope.checkTag = $scope.allResults[0].search_tag;
+                $scope.paginateResults($scope.minIndex, $scope.maxIndex);
             }
 
         }, function error (data) {
@@ -79,7 +95,13 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
     };
     $scope.displayResults = [];
     $scope.paginateResults = function(minIndex,maxIndex){
-
+        if($scope.checkTag !== $scope.tag){
+            return;
+        }
+        else{
+            $scope.displayTag = $scope.allResults[0].search_tag;
+        }
+        $scope.resultSize = $scope.allResults.length;
         if(maxIndex-minIndex < $scope.itemsPerPage){
             maxIndex = minIndex + $scope.itemsPerPage;
         }
@@ -106,6 +128,8 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
         for(var i = minIndex; i < maxIndex ; ++i){
             $scope.displayResults.push($scope.allResults[i]);
         }
+        loader.css('display', 'none');
+        imgPanel.css('display', 'block');
         console.log($scope.itemsPerPage);
     }
 
