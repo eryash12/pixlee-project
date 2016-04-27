@@ -11,6 +11,8 @@ class Home extends CI_Controller{
         parent::__construct();
         $this->load->model('user_model');
         $this->output->set_header('HTTP/1.0 200 OK');
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
     }
     function index()
     {
