@@ -59,8 +59,8 @@ class User_model extends CI_Model
         return $refResults;
 
     }
-    function getResults($tag,$startDate,$endDate,$lastUrlId){
-        $results = $this->db->query("select * from search_results where search_tag = '$tag' and img_id > $lastUrlId and time_posted > $endDate and time_posted < $startDate ORDER by img_id limit 9 ");
+    function getResults($tag,$startDate,$endDate){
+        $results = $this->db->query("select * from search_results where search_tag = '$tag' and time_posted < $endDate and time_posted > $startDate ORDER by img_id ");
         return $results->result_array();
     }
     function getAllResults(){
@@ -87,5 +87,21 @@ class User_model extends CI_Model
         $refResults = $results->result_array();
         $refResults = $refResults[0]['timestamp'];
         return $refResults;
+    }
+    function insertSearch($data){
+        $this->db->select('next_max_tag_id');
+        $results = $this->db->get_where('search_present',$data);
+        if($results->num_rows()>0){
+            $refResults = $results->result_array();
+            $refResults = $refResults[0]['next_max_tag_id'];
+            return $refResults;
+        }
+        else{
+            $this->db->insert('search_present',$data);
+            return false;
+        }
+    }
+    function updateSearch($data){
+        $this->db->query("UPDATE search_present SET next_max_tag_id = '{$data['next_max_tag_id']}' where tag = '{$data['tag']}' and start_date = '{$data['start_date']}' and end_date = '{$data['end_date']}'");
     }
 }

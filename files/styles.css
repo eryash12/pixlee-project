@@ -11,10 +11,14 @@
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+    font-family: karla;
 }
 #body .station-box{
     width: 330px;
 
+}
+#body a{
+    color: #35638c;
 }
 #body .src-station{
     background: rgba(93,93,93,0.5);
@@ -64,7 +68,10 @@
     margin: 10px;
 }
 .img{
-
+    max-height: 300px;
+    min-height: 300px;
+    max-width: 300px;
+    min-width: 300px;
 }
 .caption{
     text-overflow: ellipsis;
@@ -152,8 +159,51 @@
     padding: 0px;
 }
 .location{
-    text-overflow: ellipsis;
-    /* Required for text-overflow to do anything */
     white-space: nowrap;
-    overflow: hidden;
+    max-width: 80%;
+    overflow: hidden;              /* "overflow" value must be different from "visible" */
+
+    text-overflow: ellipsis;
 }
+.get-started{
+    font-size: 20px;
+    font-weight: bold;
+}
+.form-container{
+    font-family: karla;
+}
+#tag-displaying{
+    font-family: 'Dancing Script', cursive;
+    font-size: 40px;
+
+}
+.loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #35638c ;
+    border-right: 16px solid green;
+    border-bottom: 16px solid red;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.loader-div{
+    padding: 100px;
+    min-height:400px;
+}
+.imgFrameBody{
+    min-height: 360px;
+    max-height: 360px;
+}
+

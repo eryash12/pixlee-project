@@ -12,12 +12,12 @@ class service extends CI_Controller{
         $this->load->model('user_model');
         $this->load->helper('date');
     }
-    function get($tag,$startDate,$endDate){
+    function post($tag,$startDate,$endDate){
         //request recieved for data
-        $tag = "sometimesiamjusthappy";
-//        $tag = "nike";
-        $startDate =1461308400;
-        $endDate =1461481200;
+//        $tag = "sometimesiamjusthappy";
+////        $tag = "nike";
+//        $startDate =1461222000;
+//        $endDate =1461481200;
         //checking if tag exists in db
         $checkTag = $this->user_model->checkTag($tag);
 
@@ -29,60 +29,36 @@ class service extends CI_Controller{
             if(sizeof($img_data)>0) {
                 //if data exists store the tag in db and paginate to collect results
                $this->user_model->insertTag($tag);
-               $this->get($tag,$startDate,$endDate);
+               $this->post($tag,$startDate,$endDate);
 
             }
             else{
                 //if no data present in first call tag doesnt exist
-                echo "No data present on the tag";
+                echo "done";
                 exit;
             }
         }
         else{
            //Tag is in the db
-            echo "<br>tag already present or inserted";
-            $this->pagination($tag,null,$endDate,$startDate);
-
+            //check if the search params already exist
+            $data['tag'] = $tag;
+            $data['start_date'] = $startDate;
+            $data['end_date'] = $endDate;
+            //this will return the nextmaxtagid if search present or will insert the search and return false
+            $nextId = $this->user_model->insertSearch($data);
+            if(!$nextId) {
+                $this->pagination($tag, null, $endDate, $startDate);
+            }
+            else{
+                $this->pagination($tag,$nextId, $endDate, $startDate);
+            }
+            echo "done";
 
         }
     }
-//    function pagination($tag,$nextId,$endDate,$startDate){
-//        echo "</br> started pagination max id = $nextId";
-//        $response = $this->getApiResponse($tag,$nextId);
-//        $img_data = $response->data;
-//        $nextMaxTagId = null;
-//        if (sizeof($img_data) > 0) {
-//            if (property_exists($response->pagination, 'next_max_tag_id')) {
-//                $nextMaxTagId = $response->pagination->next_max_tag_id;
-//            }
-//            echo "filling contents";
-//         }
-//        $filledStatus = $this->getContents($img_data,$tag,$startDate,$endDate,$nextMaxTagId);
-//        if($filledStatus == false){
-//            echo "<br>reached till filling";
-////            $this->user_model->
-//            return;
-//        }
-//        else{
-//            if($nextMaxTagId != null) {
-//                $getResultCount = $this->user_model->getNumberOfResults($tag,$startDate,$endDate);
-//                echo $getResultCount;
-//                if($getResultCount < 30)
-//                $this->pagination($tag, $nextMaxTagId, $endDate, $startDate);
-//                else{
-//                    echo "<br> 30 results fetched";
-//                    return;
-//                }
-//            }
-//            else{
-//                echo "<br> next max tag id is null";
-//                return;
-//            }
-//        }
-//
-//    }
+
     function pagination($tag,$nextId,$endDate,$startDate){
-        echo "</br> started pagination max id = $nextId";
+//        echo "</br> started pagination max id = $nextId";
         $response = $this->getApiResponse($tag,$nextId);
         $img_data = $response->data;
         if (property_exists($response->pagination, 'next_max_tag_id')) {
@@ -91,10 +67,12 @@ class service extends CI_Controller{
         else{
             $nextId =null;
         }
+        $this->user_model->updateSearch(array('tag'=>$tag,'start_date'=>$startDate,'end_date'=>$endDate,'next_max_tag_id'=>$nextId));
         $this->getContents($img_data,$tag,$endDate,$startDate,$nextId);
         $getResultCount = $this->user_model->getNumberOfResults($tag,$startDate,$endDate);
         if($getResultCount < 30){
            if($nextId != null){
+
                $this->pagination($tag,$nextId,$endDate,$startDate);
            }
            else{
@@ -123,19 +101,9 @@ class service extends CI_Controller{
         for($i = 0 ; $i<sizeof($img_data); $i++){
             $data = [];
             $thisImg = $img_data[$i];
-
             $data['content_type'] = $thisImg->type;
             $data['time_posted'] = $thisImg->created_time;
-//            echo "<pre>";
-//            print_r( $data['timestamp']);
-//            echo "</pre>";
-//            if($data['timestamp']<$startDate){
-//                echo "$startDate & {$data['timestamp']}";
-//                echo "brokem due to went ahead";
-//                return false;
-//            }
             $data['instagram_link'] = $thisImg->link;
-//            $data['id'] = $thisImg->id;
             if(strcmp($data['content_type'],'video')==0){
                 $videoLinks = $thisImg->videos;
                 $data['img_url_std'] = $videoLinks->standard_resolution->url;
@@ -193,9 +161,13 @@ class service extends CI_Controller{
             }
 
         }
-//        $this->user_model->updateTag($tag, $nextId);
-        echo "contents filled";
+
+//        echo "contents filled";
         return true;
+    }
+    function get($tag,$startDate,$endDate){
+        $results = $this->user_model->getResults($tag,$startDate,$endDate);
+        echo json_encode($results);
     }
 }
 //pagination function
