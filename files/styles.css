@@ -205,4 +205,10 @@ main , footer{
     min-height: 360px;
     max-height: 360px;
 }
+.likes{
+    white-space: nowrap;
+    max-width: 80%;
+    overflow: hidden;              /* "overflow" value must be different from "visible" */
 
+    text-overflow: ellipsis;
+}

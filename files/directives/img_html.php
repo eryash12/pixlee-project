@@ -25,7 +25,7 @@
     </div>
     <div class="frame-footer col-md-12">
         <div class="col-md-12" style="padding: 0px">
-            <span class="col-md-3" style="padding: 0px">
+            <span class="col-md-3 likes" style="padding: 0px">
             <a href="{{img.instagram_link}}" data-toggle="tooltip" title="Instagram link"><i class="fa fa-instagram" aria-hidden="true"></i></a>
              &nbsp;
             <i data-toggle="tooltip" title="Likes" class="fa fa-heart" aria-hidden="true"></i>
