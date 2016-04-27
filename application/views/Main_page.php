@@ -84,7 +84,7 @@
                             <div class="col-md-12">
                             <ul class="pager">
                                 <li class="previous"><a href="javascript:void(0)" ng-click = "paginateResults(minIndex-itemsPerPage,maxIndex-itemsPerPage)">Previous</a></li>
-                                Displaying {{minIndex+1}} to {{maxIndex}} out of {{resultsize}} results
+                                Displaying {{minIndex+1}} to {{maxIndex}} out of {{resultSize}} results
                                 <li class="next"><a href="javascript:void(0)" ng-click = "paginateResults(minIndex+itemsPerPage,maxIndex+itemsPerPage)">Next</a></li>
                             </ul>
                             </div>
