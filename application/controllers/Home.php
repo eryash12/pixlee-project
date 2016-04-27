@@ -10,6 +10,7 @@ class Home extends CI_Controller{
     {
         parent::__construct();
         $this->load->model('user_model');
+        $this->output->set_header('HTTP/1.0 200 OK');
     }
     function index()
     {
@@ -175,6 +176,7 @@ class Home extends CI_Controller{
         return true;
     }
     function get($tag,$startDate,$endDate){
+
         $results = $this->user_model->getResults($tag,$startDate,$endDate);
         echo json_encode($results);
     }
