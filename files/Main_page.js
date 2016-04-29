@@ -143,7 +143,7 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
     }
     //function to compare two datees
     function compareDates(date1, date2) {
-        return new Date(date1).getDate() > new Date(date2).getDate();
+        return date1 > date2;
     }
     // function for angular to trust http:// link
     $scope.trustSrc = function(src) {
