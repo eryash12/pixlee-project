@@ -54,6 +54,8 @@
                                 </div>
                             </div>
                             <br/>
+
+                            <form ng-submit = "submit()">
                             <div class="row">
                                 <md-input-container class = 'col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-6 col-xs-offset-3'>
                                      <label>Tag</label>
@@ -62,10 +64,10 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-2 col-xs-offset-4">
-                                <md-button ng-click="submit()">Submit</md-button>
+                                <md-button type = "submit">Submit</md-button>
                                 </div>
                             </div>
-
+                            </form>
                         </div>
                         <div id="alert" class="alert alert-danger col-md-12 col-sm-12 col-xs-12" >
                             <strong>Error!</strong>{{alert}}.
