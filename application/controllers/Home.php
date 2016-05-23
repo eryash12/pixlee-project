@@ -24,7 +24,7 @@ class Home extends CI_Controller{
         $results = $this->user_model->getAllResults();
         echo json_encode($results);
     }
-    function post($tag,$startDate,$endDate){
+    function post($tag){
         //request recieved for data
         //checking if tag exists in db
         $this->output->set_header('HTTP/1.0 200 OK');
@@ -40,7 +40,7 @@ class Home extends CI_Controller{
             if(sizeof($img_data)>0) {
                 //if data exists store the tag in db and paginate to collect results
                 $this->user_model->insertTag($tag);
-                $this->post($tag,$startDate,$endDate);
+                $this->post($tag);
 
             }
             else{
@@ -53,22 +53,22 @@ class Home extends CI_Controller{
             //Tag is in the db
             //check if the search params already exist
             $data['tag'] = $tag;
-            $data['start_date'] = $startDate;
-            $data['end_date'] = $endDate;
+            $data['start_date'] = null;
+            $data['end_date'] = null;
             //this will return the nextmaxtagid if search present or will insert the search and return false
             $nextId = $this->user_model->insertSearch($data);
             if(!$nextId) {
-                $this->pagination($tag, null, $endDate, $startDate);
+                $this->pagination($tag, null);
             }
             else{
-                $this->pagination($tag,$nextId, $endDate, $startDate);
+                $this->pagination($tag,$nextId);
             }
             echo "done";
 
         }
     }
 
-    function pagination($tag,$nextId,$endDate,$startDate){
+    function pagination($tag,$nextId){
         //this function is responsible to traverse through the api
         $response = $this->getApiResponse($tag,$nextId);
         $img_data = $response->data;
@@ -82,17 +82,17 @@ class Home extends CI_Controller{
             $nextId =null;
         }
         //update search params with the nextId incase server dies and we need to start where we left off
-        $this->user_model->updateSearch(array('tag'=>$tag,'start_date'=>$startDate,'end_date'=>$endDate,'next_max_tag_id'=>$nextId));
+        $this->user_model->updateSearch(array('tag'=>$tag,'start_date'=>null,'end_date'=>null,'next_max_tag_id'=>$nextId));
         //parse through the data recieved
-        $this->getContents($img_data,$tag,$endDate,$startDate,$nextId);
+        $this->getContents($img_data,$tag,$nextId);
         //check number of results collected
-        $getResultCount = $this->user_model->getNumberOfResults($tag,$startDate,$endDate);
+        $getResultCount = $this->user_model->getNumberOfResults($tag);
         //if results are less then 90 go ahead and paginated
         if($getResultCount < 90){
             //trying to paginate
             if($nextId != null){
                 //next page available
-                $this->pagination($tag,$nextId,$endDate,$startDate);
+                $this->pagination($tag,$nextId);
             }
             else{
                 //next page not available
@@ -116,7 +116,7 @@ class Home extends CI_Controller{
         }
         return $response;
     }
-    function getContents($img_data,$tag,$endDate,$startDate,$nextId){
+    function getContents($img_data,$tag,$nextId){
         //function responsible for data parsing
         for($i = 0 ; $i<sizeof($img_data); $i++){
             $data = [];
@@ -173,18 +173,17 @@ class Home extends CI_Controller{
             }
             $data['search_tag'] = $tag;
             $data['next_max_tag_id'] = $nextId;
-            if($data['time_posted']<=$endDate && $data['time_posted']>=$startDate){
-                $this->user_model->insertResults($data, $tag,$nextId);
-            }
+            $this->user_model->insertResults($data, $tag,$nextId);
+
         }
         return true;
     }
-    function get($tag,$startDate,$endDate){
+    function get($tag){
         //function responsible to supply data on query
         $this->output->set_header('HTTP/1.0 200 OK');
         $this->output->set_header('Access-Control-Allow-Origin: *');
         $this->output->set_header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-        $results = $this->user_model->getResults($tag,$startDate,$endDate);
+        $results = $this->user_model->getResults($tag);
         echo json_encode($results);
     }
 

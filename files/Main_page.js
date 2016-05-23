@@ -3,13 +3,8 @@ var app = angular.module("instCollection",['ngMaterial','ngResource']);
 
 //setting up the controller
 app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce','$interval',function($scope,$log,$http,$resource,$sce,$interval){
-    $scope.todaysDate = new Date();
-    $scope.maxDate = new Date(
-        $scope.todaysDate.getFullYear(),
-        $scope.todaysDate.getMonth(),
-        $scope.todaysDate.getDate());
-    $scope.startDate ="";
-    $scope.endDate = "";
+
+
     $scope.tag = "sanfrancisco";
     $scope.alert = "";
     $scope.itemsPerPage = 6;
@@ -24,7 +19,7 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
     var alert = $('#alert');
     alert.hide();
     //displaying default data on page load
-    $http.get(base + 'home/get/sanfrancisco/1461567600/1461654000').then(function success(data){
+    $http.get(base + 'home/get/sanfrancisco').then(function success(data){
         $scope.allResults = data.data;
         $scope.checkTag = $scope.allResults[0].search_tag;
         $scope.paginateResults($scope.minIndex,$scope.maxIndex);
@@ -42,22 +37,11 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
             alert.fadeOut(15000);
             return;
         }
-        //check if endDate is not before startDate
-        else if(!compareDates($scope.endDate,$scope.startDate)){
-            $scope.alert=' Start Date cannot be after the End Date';
-            alert.fadeIn();
-            alert.fadeOut(15000);
-            return;
-        }
         //replace spaces in the tag
         $scope.tag = $scope.tag.replace(/\s/g, '');
-        var unixStartDate = Math.floor($scope.startDate/1000);
-        var unixEndDate = Math.floor($scope.endDate/1000);
-        //add 24hrs to the end date so that results can be collected of the EndDate too.
-        unixEndDate+= 86400;
 
         //url to call the post function used for collection of data
-        var post_url = base + 'home/post/'+$scope.tag+'/'+unixStartDate+'/'+unixEndDate+'/';
+        var post_url = base + 'home/post/'+$scope.tag;
         //var post_url = base + '/post';
         $http.post(post_url).then(function success(data){
             //if the tag contains no data the backend will echo no results
@@ -75,7 +59,7 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
         imgPanel.css('display', 'none');
         loader.css('display', 'block');
         //url to ask data to the server
-        var get_url =  base + 'home/get/'+$scope.tag+'/'+unixStartDate+'/'+unixEndDate+'/';
+        var get_url =  base + 'home/get/'+$scope.tag;
         $scope.getResults(get_url);
         $interval(function(){
             $scope.getResults(get_url);
@@ -118,9 +102,7 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
         }
         if(maxIndex >= $scope.allResults.length ){
             $('.next').hide();
-
             maxIndex = $scope.allResults.length;
-
         }
         else{
             $('.next').show();
@@ -140,10 +122,6 @@ app.controller('instCollectionCntrl',['$scope','$log','$http','$resource','$sce'
     $scope.getFormattedDate = function (date) {
         date = new Date(date * 1000);
         return ((date.getMonth()+1)+"/"+date.getDate()+"/"+date.getFullYear());
-    }
-    //function to compare two datees
-    function compareDates(date1, date2) {
-        return date1 > date2;
     }
     // function for angular to trust http:// link
     $scope.trustSrc = function(src) {

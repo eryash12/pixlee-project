@@ -53,14 +53,14 @@ class User_model extends CI_Model
         }
     }
     function getNumberOfResults($tag,$startDate,$endDate){
-        $results = $this->db->query("select count(*) as number FROM (select * from search_results where search_tag = '$tag' and time_posted < $endDate and time_posted > $startDate ORDER by img_id ) as sb ");
+        $results = $this->db->query("select count(*) as number FROM (select * from search_results where search_tag = '$tag' ORDER by img_id ) as sb ");
         $refResults = $results->result_array();
         $refResults = $refResults[0]['number'];
         return $refResults;
 
     }
     function getResults($tag,$startDate,$endDate){
-        $results = $this->db->query("select * from search_results where search_tag = '$tag' and time_posted < $endDate and time_posted > $startDate ORDER by img_id ");
+        $results = $this->db->query("select * from search_results where search_tag = '$tag' ORDER by img_id ");
         return $results->result_array();
     }
     function getAllResults(){

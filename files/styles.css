@@ -67,10 +67,10 @@ main , footer{
     margin: 10px;
 }
 .img{
-    max-height: 300px;
-    min-height: 300px;
-    max-width: 300px;
-    min-width: 300px;
+    /*max-height: 300px;*/
+    /*min-height: 300px;*/
+    /*max-width: 300px;*/
+    /*min-width: 300px;*/
 }
 .caption{
     text-overflow: ellipsis;
@@ -119,6 +119,7 @@ main , footer{
 .frame-header-left{
     padding: 0px;
     font-size: 22px;
+    margin-left: 15px;
 
 }
 .frame-header-right{
@@ -129,7 +130,6 @@ main , footer{
 
 }
 .user-name-text{
-
     text-overflow: ellipsis;
     font-family: pacifico;
     /* Required for text-overflow to do anything */
@@ -139,8 +139,6 @@ main , footer{
     padding-bottom: 6px;
     color: #35638c;
     font-weight: normal;
-
-
 }
 .frame-footer{
     padding: 0px;
@@ -161,7 +159,6 @@ main , footer{
     white-space: nowrap;
     max-width: 80%;
     overflow: hidden;              /* "overflow" value must be different from "visible" */
-
     text-overflow: ellipsis;
 }
 .get-started{
@@ -202,8 +199,8 @@ main , footer{
     min-height:400px;
 }
 .imgFrameBody{
-    min-height: 360px;
-    max-height: 360px;
+    /*min-height: 360px;*/
+    /*max-height: 360px;*/
 }
 .likes{
     white-space: nowrap;
@@ -211,4 +208,8 @@ main , footer{
     overflow: hidden;              /* "overflow" value must be different from "visible" */
 
     text-overflow: ellipsis;
+}
+.pagination-text{
+    text-align: center;
+    padding-top: 1%;
 }

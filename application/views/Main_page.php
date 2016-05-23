@@ -8,6 +8,7 @@
 <!DOCTYPE html>
     <html lang = "en" >
         <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--            Bootstrap-->
             <!-- Latest compiled and minified CSS -->
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -36,7 +37,7 @@
                 <div class="container-fluid">
                     <div class="navbar-header">
                         <a class="navbar-brand" href="<?php echo base_url()?>">
-                            <b>PIXLEE INSTAGRAM PROJECT</b>
+                            <b>INSTAGRAM PHOTO VIEWER</b>
                         </a>
                     </div>
                 </div>
@@ -47,24 +48,26 @@
             <div class="jumbotron selection-panel col-md-12" >
                     <div id="get-data-div"  >
                         <div class="form-container col-md-8 col-md-offset-2">
-                            <div class="get-started">
-                                Choose a tag and dates to get started
+                            <div class="row">
+                                <div class="get-started col-md-12 col-sm-12 col-xs-12" style="text-align: center">
+                                Choose a tag to get started
+                                </div>
                             </div>
-                            <md-input-container class = 'col-md-4'>
-                                 <label>Tag</label>
-                                 <input ng-model="tag">
-                            </md-input-container>
-                            <md-datepicker class="col-md-4" ng-model="startDate"  md-placeholder="Start date"
-                                           md-min-date="" md-max-date="maxDate">
-                            </md-datepicker>
-                            <md-datepicker class="col-md-4" ng-model="endDate"  md-placeholder="End date"
-                                           md-min-date="startDate" md-max-date="maxDate">
-                            </md-datepicker>
-                            <div class="col-md-2 col-md-offset-1">
-                            <md-button ng-click="submit()">Submit</md-button>
+                            <br/>
+                            <div class="row">
+                                <md-input-container class = 'col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-6 col-xs-offset-3'>
+                                     <label>Tag</label>
+                                     <input ng-model="tag">
+                                </md-input-container>
                             </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-2 col-xs-offset-4">
+                                <md-button ng-click="submit()">Submit</md-button>
+                                </div>
+                            </div>
+
                         </div>
-                        <div id="alert" class="alert alert-danger col-md-12" >
+                        <div id="alert" class="alert alert-danger col-md-12 col-sm-12 col-xs-12" >
                             <strong>Error!</strong>{{alert}}.
                         </div>
 
@@ -72,24 +75,29 @@
                             <div class="loader col-md-2 col-md-offset-5"></div>
                         </div>
                         <div id="dispImages" class="col-md-12" style="" >
-                            <div class="col-md-12">
-                            <ul class="pager">
-                                <li class="previous"><a href="javascript:void(0)" ng-click = "paginateResults(minIndex-itemsPerPage,maxIndex-itemsPerPage)">Previous</a></li>
-                                Displaying {{minIndex+1}} to {{maxIndex}} out of {{resultSize}} results
-                                <li class="next"><a href="javascript:void(0)" ng-click = "paginateResults(minIndex+itemsPerPage,maxIndex+itemsPerPage)">Next</a></li>
-                            </ul>
+                            <div class="row">
+                                <ul class="pager" class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-md-2 col-sm-2 col-xs-2"><li class="previous"><a href="javascript:void(0)" ng-click = "paginateResults(minIndex-itemsPerPage,maxIndex-itemsPerPage)">Previous</a></li></div>
+                                    <div class="col-md-8 col-sm-8 col-xs-8 pagination-text">Displaying {{minIndex+1}} to {{maxIndex}} out of {{resultSize}} results</div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2"><li class="next"><a href="javascript:void(0)" ng-click = "paginateResults(minIndex+itemsPerPage,maxIndex+itemsPerPage)">Next</a></li></div>
+                                </ul>
                             </div>
-                            <div id="tag-displaying">{{'#'+displayTag}}</div>
-                            <image-panel ng-repeat = "img in displayResults" image = "img" base = "{{base}}"></image-panel>
-                            <div class="col-md-12">
-                            <ul class="pager">
-                                <li class="previous"><a href="javascript:void(0)" ng-click = "paginateResults(minIndex-itemsPerPage,maxIndex-itemsPerPage)">Previous</a></li>
-                                Displaying {{minIndex+1}} to {{maxIndex}} out of {{resultSize}} results
-                                <li class="next"><a href="javascript:void(0)" ng-click = "paginateResults(minIndex+itemsPerPage,maxIndex+itemsPerPage)">Next</a></li>
-                            </ul>
+                            <div class="col-md-12 col-sm-12 col-xs-12" id="tag-displaying">{{'#'+displayTag}}</div>
+                            <div class ="row">
+                                <div ng-repeat = "img in displayResults">
+                                    <div class="clearfix" ng-if="$index % 3 == 0"></div>
+                                    <image-panel></image-panel>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <ul class="pager" class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-md-2 col-sm-2 col-xs-2"><li class="previous"><a href="javascript:void(0)" ng-click = "paginateResults(minIndex-itemsPerPage,maxIndex-itemsPerPage)">Previous</a></li></div>
+                                    <div class="col-md-8 col-sm-8 col-xs-8 pagination-text">Displaying {{minIndex+1}} to {{maxIndex}} out of {{resultSize}} results</div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2"><li class="next"><a href="javascript:void(0)" ng-click = "paginateResults(minIndex+itemsPerPage,maxIndex+itemsPerPage)">Next</a></li></div>
+                                </ul>
                             </div>
                         </div>
-
+                        </div>
                     </div>
              </div>
 
@@ -101,14 +109,13 @@
         </main>
         <footer class="col-md-12">
             <hr/>
-            <div class="col-md-4 col-md-offset-4" style="margin-top: 20px;margin-bottom: 20px">
+            <div  style="margin-top: 20px;margin-bottom: 20px;text-align: center">
                     Copyright © 2016 Yash Tamakuwala. All Rights Reserved.
             </div>
             <script>
                 var base = "<?php echo base_url();?>";
             </script>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
             <script src="<?php echo base_url()?>files/jquery.xml2json.js"></script>
             <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
@@ -120,7 +127,6 @@
             <script src="https://maps.googleapis.com/maps/api/js" async defer></script>
             <script src="<?php echo base_url()?>files/jquery.countdown.min.js"></script>
             <script src="<?php echo base_url()?>files/Main_page.js"></script>
-
         </footer>
         </body>
     </html>
